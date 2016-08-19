@@ -1,0 +1,45 @@
+{
+  "name": "metrix",
+  "version": "0.0.1",
+  "description": "event metrics library",
+  "bin": {
+    "rb": "bin/bench.js"
+  },
+  "main": "lib/index.js",
+  "scripts": {
+    "all": "make"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stevegury/metrix.git"
+  },
+  "files": [
+    "lib",
+    "bin"
+  ],
+  "keywords": [
+    "metrics",
+    "observability",
+    "monitoring"
+  ],
+  "author": "Steve Gury",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stevegury/metrix/issues"
+  },
+  "homepage": "https://github.com/stevegury/metrix#readme",
+  "dependencies": {
+    "assert-plus": "^1.0.0",
+    "lodash": "^4.6.1"
+  },
+  "devDependencies": {
+    "chai": "^3.4.0",
+    "coveralls": "^2.11.6",
+    "eslint": "^1.6.0",
+    "istanbul": "^0.4.2",
+    "jscs": "^2.3.0",
+    "minimist": "^1.2.0",
+    "mocha": "^2.3.0",
+    "sinon": "^1.17.3"
+  }
+}
