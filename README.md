@@ -25,7 +25,7 @@ Initializing the library simply like this:
 
 ```javascript
 var recorder = new Recorder();
-var aggregator = new Aggregator();
+var aggregator = new Aggregator(recorder);
 ```
 
 Creating/using counter/timer:
@@ -78,7 +78,7 @@ Scoping is encouraged for categorizing metrics into different namespaces.
 ## Tags
 
 You can add tags to a specific counter / timer, the aggregator is free to do
-anything with the tags (the default one, just drop the tags).
+anything with the tags.
 
 `aggregator.test.js` has a test that demonstrate how to use tags for creating
 histograms per request url, despite only measuring the latency once.
