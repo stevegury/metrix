@@ -41,5 +41,8 @@
     "minimist": "^1.2.0",
     "mocha": "^2.3.0",
     "sinon": "^1.17.3"
+  },
+  "directories": {
+    "test": "test"
   }
 }
