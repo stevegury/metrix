@@ -44,9 +44,9 @@ describe('precise counter events', function () {
             done();
         });
 
-        recorder.counter('forbiddenEvent');
+        recorder.counter('forbiddenEvent', 1);
         assert(!eventReceived, 'No event should have been received!');
-        recorder.counter('okEvent');
+        recorder.counter('okEvent', 1);
     });
 
     it('scope counter works', function () {
