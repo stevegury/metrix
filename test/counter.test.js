@@ -11,11 +11,11 @@ describe('precise counter events', function () {
         var recorder = new Recorder();
         var name = 'connections';
 
-        var expectations = [8, 11, 12, 7, 6, 5];
+        var expectations = [-3, -1, 5, 1, 1, 5];
         recorder.on('counter', function (event) {
             assert(event.name === name);
             var expected = expectations.pop();
-            assert(event.value === expected);
+            assert(event.increment === expected);
         });
 
         var connectionCounter = recorder.counter(name, 5);
