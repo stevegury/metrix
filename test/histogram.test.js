@@ -4,7 +4,7 @@ var assert = require('chai').assert;
 var expect = require('chai').expect;
 
 var BucketedHistogram = require('../lib/stats/bucketedhistogram.js');
-var getRandomInt = require('./common/getRandomInt');
+var getRandomInt = require('../lib/common/getRandomInt');
 var StreamingHistogram =
     require('../lib/stats/streaminghistogram.js');
 

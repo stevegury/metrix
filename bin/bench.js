@@ -5,8 +5,8 @@ var _ = require('lodash');
 
 var Aggregator = require('../lib/aggregator.js');
 var BucketedHistogram = require('../lib/stats/bucketedhistogram.js');
-var getRandomInt = require('../test/common/getRandomInt.js');
-var getSemaphore = require('../test/common/getSemaphore.js');
+var getRandomInt = require('../lib/common/getRandomInt.js');
+var getSemaphore = require('../lib/common/getSemaphore.js');
 var NullCounter = require('../lib/counter/disable.js');
 var NullTimer = require('../lib/timer/disable.js');
 var Recorder = require('../lib/recorder.js');

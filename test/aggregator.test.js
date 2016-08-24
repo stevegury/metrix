@@ -6,8 +6,8 @@ var _ = require('lodash');
 
 var Aggregator = require('../lib/aggregator.js');
 var BucketedHistogram = require('../lib/stats/bucketedhistogram.js');
-var getRandomInt = require('./common/getRandomInt.js');
-var getSemaphore = require('./common/getSemaphore.js');
+var getRandomInt = require('../lib/common/getRandomInt.js');
+var getSemaphore = require('../lib/common/getSemaphore.js');
 var Recorder = require('../lib/recorder.js');
 
 describe('Aggregator', function () {
