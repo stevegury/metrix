@@ -6,3 +6,4 @@ coverage/
 *.iml
 .vscode
 jsconfig.json
+.npmrc
