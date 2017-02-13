@@ -57,7 +57,7 @@ describe('timer events', function () {
 
     it('scoped timer works', function () {
         var rootRecorder = new Recorder();
-        var sep = rootRecorder._separator;
+        var sep = rootRecorder.separator;
         var scope1 = 'foo';
         var scope2 = 'bar';
         var name = 'my_timer';

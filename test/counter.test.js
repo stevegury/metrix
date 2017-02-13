@@ -51,7 +51,7 @@ describe('precise counter events', function () {
 
     it('scope counter works', function () {
         var rootRecorder = new Recorder();
-        var sep = rootRecorder._separator;
+        var sep = rootRecorder.separator;
         var scope1 = 'foo';
         var scope2 = 'bar';
         var name = 'my_counter';
