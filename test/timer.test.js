@@ -1,33 +1,33 @@
 'use strict';
 
-var assert = require('chai').assert;
+const assert = require('chai').assert;
 
-var DefaultTimer = require('../lib/timer/timer.js');
-var NullTimer = require('../lib/timer/disable.js');
-var Recorder = require('../lib/recorder.js');
+const DefaultTimer = require('../lib/timer/timer.js');
+const NullTimer = require('../lib/timer/disable.js');
+const Recorder = require('../lib/recorder.js');
 
-describe('timer events', function () {
-    it('start/stop generate event', function (done) {
-        var recorder = new Recorder();
-        var duration = 10;
-        var name = 'send-request';
+describe('timer events', function() {
+    it('start/stop generate event', function(done) {
+        const recorder = new Recorder();
+        const duration = 10;
+        const name = 'send-request';
 
-        recorder.on('timer', function (event) {
+        recorder.on('timer', function(event) {
             assert(event.stopTs - event.startTs >= duration);
             assert(event.name === name);
             done();
         });
 
-        var timer = recorder.timer(name);
-        var id = timer.start();
-        setTimeout(function () {
+        const timer = recorder.timer(name);
+        const id = timer.start();
+        setTimeout(function() {
             timer.stop(id);
         }, 10);
     });
 
-    it('disabled recorder doesn\'t generate events', function (done) {
-        var recorder = new Recorder({
-            timer: function (_recorder, name, tags) {
+    it('disabled recorder doesn\'t generate events', function(done) {
+        const recorder = new Recorder({
+            timer: function(_recorder, name, tags) {
                 if (name === 'forbiddenEvent') {
                     return NullTimer;
                 } else {
@@ -36,54 +36,54 @@ describe('timer events', function () {
             }
         });
 
-        var eventReceived = false;
-        recorder.on('timer', function (event) {
+        let eventReceived = false;
+        recorder.on('timer', function(event) {
             eventReceived = true;
             assert(event.stopTs - event.startTs >= 0);
             assert(event.name === 'okEvent');
             done();
         });
 
-        var timer0 = recorder.timer('forbiddenEvent');
-        var id0 = timer0.start();
+        const timer0 = recorder.timer('forbiddenEvent');
+        const id0 = timer0.start();
         timer0.stop(id0);
 
         assert(!eventReceived, 'No event should have been received!');
 
-        var timer1 = recorder.timer('okEvent');
-        var id1 = timer1.start();
+        const timer1 = recorder.timer('okEvent');
+        const id1 = timer1.start();
         timer1.stop(id1);
     });
 
-    it('scoped timer works', function () {
-        var rootRecorder = new Recorder();
-        var sep = rootRecorder.separator;
-        var scope1 = 'foo';
-        var scope2 = 'bar';
-        var name = 'my_timer';
+    it('scoped timer works', function() {
+        const rootRecorder = new Recorder();
+        const sep = rootRecorder.separator;
+        const scope1 = 'foo';
+        const scope2 = 'bar';
+        const name = 'my_timer';
 
-        rootRecorder.on('timer', function (event) {
+        rootRecorder.on('timer', function(event) {
             assert(event.name === scope1 + sep + scope2 + sep + name);
         });
 
-        var scopedRecorder = rootRecorder.scope(scope1).scope(scope2);
-        var timer = scopedRecorder.timer(name);
-        var id = timer.start();
+        const scopedRecorder = rootRecorder.scope(scope1).scope(scope2);
+        const timer = scopedRecorder.timer(name);
+        const id = timer.start();
         timer.stop(id);
     });
 
-    it('tags works', function () {
-        var recorder = new Recorder();
-        var tags = {tag0: 'test', tag1: 'toto'};
+    it('tags works', function() {
+        const recorder = new Recorder();
+        const tags = { tag0: 'test', tag1: 'toto' };
 
-        recorder.on('timer', function (event) {
+        recorder.on('timer', function(event) {
             assert(event.name === 'toto');
             assert.equal(event.tag0, 'test');
             assert.equal(event.tag1, 'toto');
         });
 
-        var timer = recorder.timer('toto', tags);
-        var id = timer.start();
+        const timer = recorder.timer('toto', tags);
+        const id = timer.start();
         timer.stop(id);
     });
 });

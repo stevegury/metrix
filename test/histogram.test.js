@@ -1,21 +1,21 @@
 'use strict';
 
-var assert = require('chai').assert;
-var expect = require('chai').expect;
+const assert = require('chai').assert;
+const expect = require('chai').expect;
 
-var BucketedHistogram = require('../lib/stats/bucketedhistogram.js');
-var getRandomInt = require('../lib/common/getRandomInt');
-var StreamingHistogram =
+const BucketedHistogram = require('../lib/stats/bucketedhistogram.js');
+const getRandomInt = require('../lib/common/getRandomInt');
+const StreamingHistogram =
     require('../lib/stats/streaminghistogram.js');
 
-describe('StreamingHistogram', function () {
-    it('empty histogram', function () {
-        var h = new StreamingHistogram();
+describe('StreamingHistogram', function() {
+    it('empty histogram', function() {
+        const h = new StreamingHistogram();
         assert.deepEqual(h.snapshot(), {});
     });
 
-    it('single value histogram', function () {
-        var h = new StreamingHistogram();
+    it('single value histogram', function() {
+        const h = new StreamingHistogram();
         h.add(1);
         assert.deepEqual(h.snapshot(), {
             min: 1,
@@ -26,14 +26,14 @@ describe('StreamingHistogram', function () {
         });
     });
 
-    it('histogram & random data', function () {
-        var h = new StreamingHistogram();
+    it('histogram & random data', function() {
+        const h = new StreamingHistogram();
 
-        for (var i = 0; i < 10000; i++) {
+        for (let i = 0; i < 10000; i++) {
             h.add(getRandomInt(0, 1000));
         }
 
-        var snap = h.snapshot();
+        const snap = h.snapshot();
         expect(snap.min).to.be.within(0, 50);
         expect(snap.p50).to.be.within(400, 600);
         expect(snap.p90).to.be.within(850, 950);
@@ -42,15 +42,15 @@ describe('StreamingHistogram', function () {
     });
 });
 
-describe('BucketedHistogram', function () {
-    it('empty histogram', function () {
-        var h = new BucketedHistogram();
+describe('BucketedHistogram', function() {
+    it('empty histogram', function() {
+        const h = new BucketedHistogram();
         assert.deepEqual(h.snapshot(), {});
     });
 
-    it('binary search', function () {
-        var h = new BucketedHistogram();
-        var a = [1, 2, 4, 6, 12, 28, 31];
+    it('binary search', function() {
+        const h = new BucketedHistogram();
+        const a = [1, 2, 4, 6, 12, 28, 31];
 
         assert.equal(0, h._binarySearch(0, a, 0, 6));
         assert.equal(0, h._binarySearch(1, a, 0, 6));
@@ -73,10 +73,10 @@ describe('BucketedHistogram', function () {
         assert.equal(6, h._binarySearch(31, a, 0, 6));
     });
 
-    it('single value histogram', function () {
-        var h = new BucketedHistogram();
+    it('single value histogram', function() {
+        const h = new BucketedHistogram();
         h.add(1);
-        var snap = h.snapshot();
+        const snap = h.snapshot();
         assert.equal(snap.min, 1);
         assert.equal(snap.max, 1);
         assert.equal(snap.p50, 1);
@@ -84,11 +84,11 @@ describe('BucketedHistogram', function () {
         assert.equal(snap.p99, 1);
     });
 
-    it('double value histogram', function () {
-        var h = new BucketedHistogram();
+    it('double value histogram', function() {
+        const h = new BucketedHistogram();
         h.add(1);
         h.add(10);
-        var snap = h.snapshot();
+        const snap = h.snapshot();
         assert.equal(snap.min, 1);
         assert.equal(snap.max, 10);
         assert.equal(snap.p50, 1);
@@ -96,14 +96,14 @@ describe('BucketedHistogram', function () {
         expect(snap.p99).to.be.within(9, 10);
     });
 
-    it('histogram & random data', function () {
-        var h = new BucketedHistogram();
+    it('histogram & random data', function() {
+        const h = new BucketedHistogram();
 
-        for (var i = 0; i < 10000; i++) {
+        for (let i = 0; i < 10000; i++) {
             h.add(getRandomInt(0, 1000));
         }
 
-        var snap = h.snapshot();
+        const snap = h.snapshot();
         assert.equal(snap.min, 0);
         expect(snap.p50).to.be.within(480, 520);
         expect(snap.p90).to.be.within(880, 920);
@@ -111,14 +111,14 @@ describe('BucketedHistogram', function () {
         assert.equal(snap.max, 999);
     });
 
-    it('histogram & deal with overflow', function () {
-        var h = new BucketedHistogram({max: 10});
+    it('histogram & deal with overflow', function() {
+        const h = new BucketedHistogram({ max: 10 });
 
-        for (var i = 0; i < 10000; i++) {
+        for (let i = 0; i < 10000; i++) {
             h.add(getRandomInt(0, 1000));
         }
 
-        var snap = h.snapshot();
+        const snap = h.snapshot();
         expect(snap.min).to.be.within(0, 50);
         expect(snap.p50).to.be.within(9, 11);
         expect(snap.p90).to.be.within(9, 11);

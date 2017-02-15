@@ -1,13 +1,7 @@
 {
     // setup
-    "fileExtensions":   [ ".js" ],
-    "excludeFiles":     [ "./node_modules/**",
-                          "./bin",
-                          "./deps",
-                          "./docs",
-                          "./examples",
-                          "./coverage"
-                        ],
+    "fileExtensions":  [ ".js" ],
+    "excludeFiles":    [ "./node_modules/**" ],
 
     // general rules
     "safeContextKeyword": [ "self" ],
@@ -16,18 +10,16 @@
         "escape": true,
         "mark": "'"
     },
+    "requireLineFeedAtFileEnd": true,
 
     // alignment rules
     "maximumLineLength": {
         "value": 80,
-        "allowComments": false,
+        "allowComments": true,
         "allowUrlComments": true,
-        "allowRegex": false
+        "allowRegex": true
     },
     "validateIndentation": 4,
-
-    // newline on EOF
-    "requireLineFeedAtFileEnd": true,
 
     // disallow rules
     "disallowImplicitTypeConversion": [
@@ -36,7 +28,6 @@
         "binary",
         "string"
     ],
-    "disallowAnonymousFunctions": false,
     "disallowMixedSpacesAndTabs": true,
     "disallowMultipleVarDecl": "exceptUndefined",
     "disallowNewlineBeforeBlockStatements": true,
@@ -44,6 +35,9 @@
     "disallowQuotedKeysInObjects": true,
     "disallowSpaceAfterPrefixUnaryOperators": true,
     "disallowSpaceBeforePostfixUnaryOperators": true,
+    "disallowSpacesInFunction": {
+        "beforeOpeningRoundBrace": true
+    },
     "disallowSpacesInCallExpression": true,
     "disallowTrailingComma": true,
     "disallowTrailingWhitespace": true,
@@ -51,8 +45,7 @@
 
     // require rules
     "requireBlocksOnNewline": true,
-    // TODO: come back to this rule after we normalize code base
-    // "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
+    "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
     "requireCapitalizedConstructors": true,
     "requireCurlyBraces": [
         "if",
@@ -77,7 +70,22 @@
     ],
     "requireSemicolons": true,
     "requireSpaceAfterBinaryOperators": true,
-    "requireSpaceAfterKeywords": true,
+    "requireSpaceAfterKeywords": [
+        "do",
+        "for",
+        "if",
+        "else",
+        "switch",
+        "case",
+        "try",
+        "catch",
+        "while",
+        "return",
+        "typeof",
+        "delete",
+        "new",
+        "void"
+    ],
     "requireSpaceBeforeBinaryOperators": true,
     "requireSpaceBeforeBlockStatements": true,
     "requireSpaceBeforeKeywords": [
@@ -86,13 +94,12 @@
         "catch"
     ],
     "requireSpaceBetweenArguments": true,
-    "requireSpacesInAnonymousFunctionExpression": {
-        "beforeOpeningRoundBrace": true
+    "requireSpacesInsideObjectBrackets": {
+        "allExcept": [ "}", ")", "]" ]
     },
     "requireSpacesInConditionalExpression": true,
     "requireSpacesInForStatement": true,
     "requireSpacesInFunction": {
         "beforeOpeningCurlyBrace": true
-    },
-    "requireImportAlphabetized": true
+    }
 }

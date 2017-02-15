@@ -1,22 +1,22 @@
 'use strict';
 
-var assert = require('chai').assert;
-var expect = require('chai').expect;
-var _ = require('lodash');
+const assert = require('chai').assert;
+const expect = require('chai').expect;
+const _ = require('lodash');
 
-var Aggregator = require('../lib/aggregator.js');
-var BucketedHistogram = require('../lib/stats/bucketedhistogram.js');
-var getRandomInt = require('../lib/common/getRandomInt.js');
-var getSemaphore = require('../lib/common/getSemaphore.js');
-var Recorder = require('../lib/recorder.js');
+const Aggregator = require('../lib/aggregator.js');
+const BucketedHistogram = require('../lib/stats/bucketedhistogram.js');
+const getRandomInt = require('../lib/common/getRandomInt.js');
+const getSemaphore = require('../lib/common/getSemaphore.js');
+const Recorder = require('../lib/recorder.js');
 
-describe('Aggregator', function () {
-    it('works', function (done) {
-        var recorder = new Recorder();
-        var aggregator = new Aggregator(recorder);
+describe('Aggregator', function() {
+    it('works', function(done) {
+        const recorder = new Recorder();
+        const aggregator = new Aggregator(recorder);
 
         function finish() {
-            var report = aggregator.report();
+            const report = aggregator.report();
 
             assert.equal(report.counters.counter, 3);
             assert.equal(report.counters['connections/add'], 17);
@@ -28,7 +28,7 @@ describe('Aggregator', function () {
             expect(report.histograms.request_latency.p90).to.be.within(30, 55);
             expect(report.histograms.request_latency.p99).to.be.within(45, 100);
 
-            var connectLatency =
+            const connectLatency =
                 report.histograms['connections/connect_latency'];
             expect(connectLatency.min).to.be.within(0, 10);
             expect(connectLatency.max).to.be.within(40, 100);
@@ -40,37 +40,37 @@ describe('Aggregator', function () {
         }
 
         recorder.counter('counter', 3);
-        var connections = recorder.scope('connections');
+        const connections = recorder.scope('connections');
         connections.counter('add', 17);
         connections.counter('remove', 2);
 
-        var n = 1 << 8;
-        var semaphore = getSemaphore(n, finish);
-        var requestLatency = recorder.timer('request_latency');
+        const n = 1 << 8;
+        const semaphore = getSemaphore(n, finish);
+        const requestLatency = recorder.timer('request_latency');
 
-        for (var i = 0; i < n / 2; i++) {
-            var id = requestLatency.start();
-            setTimeout(function () {
+        for (let i = 0; i < n / 2; i++) {
+            const id = requestLatency.start();
+            setTimeout(function() {
                 requestLatency.stop(id);
                 semaphore.latch();
             }, getRandomInt(0, 50));
         }
-        var connectionLatency = connections.timer('connect_latency');
+        const connectionLatency = connections.timer('connect_latency');
 
-        for (var j = 0; j < n / 2; j++) {
-            var id2 = connectionLatency.start();
-            setTimeout(function () {
+        for (let j = 0; j < n / 2; j++) {
+            const id2 = connectionLatency.start();
+            setTimeout(function() {
                 connectionLatency.stop(id2);
                 semaphore.latch();
             }, getRandomInt(0, 50));
         }
     });
 
-    it('tag timer works', function () {
-        var recorder = new Recorder();
-        var aggregator = new Aggregator(recorder, {
-            timer: function (event, histograms, counters) {
-                var duration = event.stopTs - event.startTs;
+    it('tag timer works', function() {
+        const recorder = new Recorder();
+        const aggregator = new Aggregator(recorder, {
+            timer: function(event, histograms, counters) {
+                const duration = event.stopTs - event.startTs;
 
                 if (!histograms[event.name]) {
                     histograms[event.name] = new BucketedHistogram();
@@ -78,7 +78,7 @@ describe('Aggregator', function () {
                 histograms[event.name].add(duration);
 
                 if (event.url) {
-                    var name = event.url + '/' + event.name;
+                    const name = event.url + '/' + event.name;
 
                     if (!histograms[name]) {
                         histograms[name] = new BucketedHistogram();
@@ -87,43 +87,43 @@ describe('Aggregator', function () {
                 }
             }
         });
-        var timer = recorder.timer('request_latency_ms');
+        const timer = recorder.timer('request_latency_ms');
 
-        _.forEach(['home', 'edit', 'explore'], function (url) {
-            for (var i = 0; i < 100; i++) {
-                var id = timer.start();
-                timer.stop(id, {url: url});
+        _.forEach(['home', 'edit', 'explore'], function(url) {
+            for (let i = 0; i < 100; i++) {
+                const id = timer.start();
+                timer.stop(id, { url: url });
             }
         });
 
-        var report = aggregator.report();
+        const report = aggregator.report();
         assert(report.histograms.request_latency_ms);
         assert(report.histograms['home/request_latency_ms']);
         assert(report.histograms['edit/request_latency_ms']);
         assert(report.histograms['explore/request_latency_ms']);
     });
 
-    it('create composite counters', function () {
-        var recorder = new Recorder();
-        var aggregator = new Aggregator(recorder, {
+    it('create composite counters', function() {
+        const recorder = new Recorder();
+        const aggregator = new Aggregator(recorder, {
             composites: [
-                function (counters, histograms) {
-                    var current = counters['connections/add'] -
+                function(counters, histograms) {
+                    const current = counters['connections/add'] -
                         counters['connections/remove'];
                     return ['connections/current', current];
                 },
-                function (counters, histograms) {
-                    var a = counters.a;
-                    var b = counters.b;
-                    var c = counters.c;
+                function(counters, histograms) {
+                    const a = counters.a;
+                    const b = counters.b;
+                    const c = counters.c;
                     return ['d', a + b + c, 'e', a * b * c];
                 }
             ]
         });
 
-        var rec = recorder.scope('connections');
-        var add = rec.counter('add');
-        var remove = rec.counter('remove');
+        const rec = recorder.scope('connections');
+        const add = rec.counter('add');
+        const remove = rec.counter('remove');
         add.incr();
         add.incr();
         add.incr();
@@ -134,7 +134,7 @@ describe('Aggregator', function () {
         recorder.counter('b', 30);
         recorder.counter('c', 5);
 
-        var report = aggregator.report();
+        const report = aggregator.report();
         assert.equal(report.counters['connections/current'], 1);
         assert.equal(report.counters.d, 45);
         assert.equal(report.counters.e, 1500);
