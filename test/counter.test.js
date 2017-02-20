@@ -6,7 +6,7 @@ const DefaultCounter = require('../lib/counter/counter.js');
 const NullCounter = require('../lib/counter/disable.js');
 const Recorder = require('../lib/recorder.js');
 
-describe('precise counter events', function() {
+describe('Timer', function() {
     it('create/update', function() {
         const recorder = new Recorder();
         const name = 'connections';
@@ -71,6 +71,19 @@ describe('precise counter events', function() {
 
         recorder.on('counter', function(event) {
             assert(event.name === 'toto');
+            assert.deepEqual(event.tags, tags);
+        });
+
+        const c = recorder.counter('toto', 5, tags);
+        c.incr();
+    });
+
+    it('tags works with scope', function () {
+        const recorder = (new Recorder()).scope('scope1');
+        const tags = { tag0: 'test' };
+
+        recorder.on('counter', function (event) {
+            assert(event.name === 'scope1' + recorder.separator + 'toto');
             assert.deepEqual(event.tags, tags);
         });
 

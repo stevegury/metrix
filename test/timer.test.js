@@ -6,8 +6,8 @@ const DefaultTimer = require('../lib/timer/timer.js');
 const NullTimer = require('../lib/timer/disable.js');
 const Recorder = require('../lib/recorder.js');
 
-describe('timer events', function() {
-    it('start/stop generate event', function(done) {
+describe('Timer', function() {
+    it('start/stop generates event', function(done) {
         const recorder = new Recorder();
         const duration = 10;
         const name = 'send-request';
@@ -78,6 +78,21 @@ describe('timer events', function() {
 
         recorder.on('timer', function(event) {
             assert(event.name === 'toto');
+            assert.equal(event.tag0, 'test');
+            assert.equal(event.tag1, 'toto');
+        });
+
+        const timer = recorder.timer('toto', tags);
+        const id = timer.start();
+        timer.stop(id);
+    });
+
+    it('tags works with scope', function () {
+        const recorder = (new Recorder()).scope('scope1');
+        const tags = { tag0: 'test', tag1: 'toto' };
+
+        recorder.on('timer', function (event) {
+            assert(event.name === 'scope1' + recorder.separator + 'toto');
             assert.equal(event.tag0, 'test');
             assert.equal(event.tag1, 'toto');
         });

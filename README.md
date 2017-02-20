@@ -4,12 +4,14 @@
 
 The library is composed of two central objects: the `Recorder` and the `Aggregator`.
 
-You use the `Recorder` to create `Counters` and `Timers`, then the `Counters` and
-`Timers` are used to send events to the `Recorder`.
+You use the `Recorder` to create `Counters`, `Timers` and `Histogram`, then
+the `Counters`, `Timers` and `Histogram`  are used to send events to the
+`Recorder`.
 
-On the other end, the `Aggregator` listen to events emitted by the `Counters` / `Timers`
-and aggregate them. The default `Aggregator` aggregates counter events as a single
-value (the latest) and timer event into an histogram.
+On the other end, the `Aggregator` listen to events emitted by the
+`Counters` / `Timers` / `Histogram` and aggregate them.
+The default `Aggregator` aggregates counter events as a single value
+(the latest) and timer event into an histogram.
 But nothing is preventing you for having different aggregating strategy, for
 instance you may want to keep a min/avg/latest/max structure for every counters.
 
@@ -31,12 +33,16 @@ var aggregator = new Aggregator(recorder);
 Creating/using counter/timer:
 
 ```javascript
-var myCounter = recorder.counter('my_counter');
+const myCounter = recorder.counter('my_counter');
 myCounter.incr();
 myCounter.incr();
 
-var latencyTimer = recorder.timer('latency');
-var id = latencyTimer.start();
+const myHisto = recorder.histogram('my_histo');
+myHisto.add(12);
+myHisto.add(34);
+
+const latencyTimer = recorder.timer('latency');
+const id = latencyTimer.start();
 // do something...
 latencyTimer.stop(id);
 ```
@@ -89,9 +95,10 @@ The configuration is pretty flexible and you can control how you send event at
 both recording-time and aggregation-time.
 
 The config Object contains two entries `recorder` and `aggregator`.
-`recorder` contains two entries `counter` and `timer`, which are functions used
-for creating a new `Counter` / `Timer`. This function can be used to decide
-how to record metrics event (e.g. disable specific event recording).
+`recorder` contains two entries `counter`, `timer` and `histogram`, which are
+functions used for creating a new `Counter` / `Timer` / `Histogram`.
+This function can be used to decide how to record metrics event
+(e.g. disable specific event recording).
 `aggregator` contains three entries `counter`, `timer` and `composites`. The
 first two are used for controlling how to aggregate events, they can create new
 histogram / counter at will based on the events it receives.
