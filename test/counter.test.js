@@ -78,11 +78,11 @@ describe('Timer', function() {
         c.incr();
     });
 
-    it('tags works with scope', function () {
+    it('tags works with scope', function() {
         const recorder = (new Recorder()).scope('scope1');
         const tags = { tag0: 'test' };
 
-        recorder.on('counter', function (event) {
+        recorder.on('counter', function(event) {
             assert(event.name === 'scope1' + recorder.separator + 'toto');
             assert.deepEqual(event.tags, tags);
         });

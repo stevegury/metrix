@@ -6,8 +6,8 @@ const DefaultHistogram = require('../lib/histogram/default.js');
 const NullHistogram = require('../lib/histogram/disable.js');
 const Recorder = require('../lib/recorder.js');
 
-describe('Histogram', function () {
-    it('create/update', function () {
+describe('Histogram', function() {
+    it('create/update', function() {
         const recorder = new Recorder();
         const name = 'data';
 
@@ -24,9 +24,9 @@ describe('Histogram', function () {
         histo.add(100);
     });
 
-    it('disabled histogram doesn\'t generate events', function (done) {
+    it('disabled histogram doesn\'t generate events', function(done) {
         const recorder = new Recorder({
-            histogram: function (_recorder, name, tags) {
+            histogram: function(_recorder, name, tags) {
                 if (name !== 'forbiddenHisto') {
                     return new DefaultHistogram(_recorder, name, tags);
                 } else {
@@ -36,7 +36,7 @@ describe('Histogram', function () {
         });
 
         let eventReceived = false;
-        recorder.on('histogram', function (event) {
+        recorder.on('histogram', function(event) {
             eventReceived = true;
             assert(event.name === 'okHisto');
             done();
@@ -49,14 +49,14 @@ describe('Histogram', function () {
         histo2.add(1);
     });
 
-    it('scope histogram works', function () {
+    it('scope histogram works', function() {
         const rootRecorder = new Recorder();
         const sep = rootRecorder.separator;
         const scope1 = 'foo';
         const scope2 = 'bar';
         const name = 'my_histo';
 
-        rootRecorder.on('histogram', function (event) {
+        rootRecorder.on('histogram', function(event) {
             assert(event.name === scope1 + sep + scope2 + sep + name);
         });
 
@@ -65,11 +65,11 @@ describe('Histogram', function () {
         histo.add(1);
     });
 
-    it('tags works', function () {
+    it('tags works', function() {
         const recorder = new Recorder();
         const tags = { tag0: 'test' };
 
-        recorder.on('histogram', function (event) {
+        recorder.on('histogram', function(event) {
             assert(event.name === 'toto');
             assert.deepEqual(event.tags, tags);
         });
@@ -78,11 +78,11 @@ describe('Histogram', function () {
         histo.add(1);
     });
 
-    it('tags works with scope', function () {
+    it('tags works with scope', function() {
         const recorder = (new Recorder()).scope('scope1');
         const tags = { tag0: 'test' };
 
-        recorder.on('histogram', function (event) {
+        recorder.on('histogram', function(event) {
             assert(event.name === 'scope1' + recorder.separator + 'toto');
             assert.deepEqual(event.tags, tags);
         });

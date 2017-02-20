@@ -31,15 +31,16 @@ describe('Configuration', function() {
     });
 
     const configs = {
-        'DEFAULT': defaultConfig,
-        'PRECISE': preciseConfig,
-        'CUSTOM': customConfig
-    }
+        DEFAULT: defaultConfig,
+        PRECISE: preciseConfig,
+        CUSTOM: customConfig
+    };
 
     _.forEach(configs, (config, configName) => {
-        it('Config "' + configName + '" works', function () {
+        it('Config "' + configName + '" works', function() {
             const recorder = new Recorder(defaultConfig.recorder);
-            const aggregator = new Aggregator(recorder, defaultConfig.aggregator);
+            const aggregator =
+                new Aggregator(recorder, defaultConfig.aggregator);
             recorder.counter('counter', 1);
 
             const timer = recorder.timer('timer');
