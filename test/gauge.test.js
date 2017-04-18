@@ -2,29 +2,44 @@
 
 const assert = require('chai').assert;
 
-const DefaultCounter = require('../lib/counter/counter.js');
-const NullCounter = require('../lib/counter/disable.js');
+const DefaultGauge = require('../lib/gauge/default.js');
+const NullGauge = require('../lib/gauge/disable.js');
 const Recorder = require('../lib/recorder.js');
 
 describe('Gauge', function() {
     it('create/update', function() {
         const recorder = new Recorder();
         const name = 'connections';
-        const sep = recorder.separator;
 
-        const nameExpectations = [
-            'connections' + sep + 'removes',
-            'connections' + sep + 'removes',
-            'connections' + sep + 'adds',
-            'connections' + sep + 'adds',
-            'connections' + sep + 'adds'
-        ];
-        const valueExpectations = [5, 2, 7, 5, 5];
-        recorder.on('counter', function(event) {
-            const expectedName = nameExpectations.pop();
+        const valueExpectations = [10, 10, 15, 17, 10, 5];
+        recorder.on('gauge', function(event) {
             const expectedValue = valueExpectations.pop();
-            assert.equal(event.increment, expectedValue);
-            assert.equal(event.name, expectedName);
+            assert.equal(event.value, expectedValue);
+        });
+
+        const gauge = recorder.gauge(name, 5);
+        gauge.update(10);
+        gauge.update(17);
+        gauge.update(15);
+        gauge.update(10);
+        gauge.update(10);
+    });
+
+    it('create/update precise gauge', function() {
+        const recorder = new Recorder();
+        const name = 'connections';
+
+        const valueExpectations = [10, 10, 15, 17, 10, 5];
+        recorder.on('gauge', function(event) {
+            const expectedValue = valueExpectations.pop();
+            assert.equal(event.value, expectedValue);
+        });
+
+        // precise gauges also generate histograms of values
+        recorder.on('histogram', function(event) {
+            assert.equals(event.name, name + recorder.separator + 'histogram');
+            const expectedValue = valueExpectations.pop();
+            assert.equal(event.value, expectedValue);
         });
 
         const gauge = recorder.gauge(name, 5);
@@ -37,17 +52,17 @@ describe('Gauge', function() {
 
     it('disabled recorder doesn\'t generate events', function(done) {
         const recorder = new Recorder({
-            counter: function(_recorder, name, tags) {
+            gauge: function(_recorder, name, tags) {
                 if (name.startsWith('forbiddenEvent')) {
-                    return NullCounter;
+                    return NullGauge;
                 } else {
-                    return new DefaultCounter(_recorder, name, tags);
+                    return new DefaultGauge(_recorder, name, tags);
                 }
             }
         });
 
         let eventReceived = false;
-        recorder.on('counter', function(event) {
+        recorder.on('gauge', function(event) {
             eventReceived = true;
             assert(event.name.startsWith('okEvent'));
             done();
@@ -78,7 +93,7 @@ describe('Gauge', function() {
         const recorder = new Recorder();
         const tags = { tag0: 'test' };
 
-        recorder.on('counter', function(event) {
+        recorder.on('gauge', function(event) {
             assert(event.name.startsWith('toto'));
             assert.deepEqual(event.tags, tags);
         });
@@ -91,7 +106,7 @@ describe('Gauge', function() {
         const recorder = (new Recorder()).scope('scope1');
         const tags = { tag0: 'test' };
 
-        recorder.on('counter', function(event) {
+        recorder.on('gauge', function(event) {
             assert(event.name.startsWith(
                 'scope1' + recorder.separator + 'toto'));
             assert.deepEqual(event.tags, tags);

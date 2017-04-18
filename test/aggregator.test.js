@@ -22,6 +22,8 @@ describe('Aggregator', function() {
             assert.equal(report.counters['connections/add'], 17);
             assert.equal(report.counters['connections/remove'], 2);
 
+            assert.equal(report.gauges.my_gauge, 3);
+
             expect(report.histograms.request_latency.min).to.be.within(0, 10);
             expect(report.histograms.request_latency.max).to.be.within(40, 100);
             expect(report.histograms.request_latency.p50).to.be.within(15, 35);
@@ -43,6 +45,11 @@ describe('Aggregator', function() {
         const connections = recorder.scope('connections');
         connections.counter('add', 17);
         connections.counter('remove', 2);
+
+        const gauge = recorder.gauge('my_gauge');
+        gauge.update(1);
+        gauge.update(2);
+        gauge.update(3);
 
         const n = 1 << 8;
         const semaphore = getSemaphore(n, finish);

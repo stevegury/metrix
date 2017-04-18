@@ -27,7 +27,11 @@ describe('Configuration', function() {
         timer.start();
         timer.stop();
 
-        assert.deepEqual(aggregator.report(), { counters: {}, histograms: {}});
+        assert.deepEqual(aggregator.report(), {
+            counters: {},
+            gauges: {},
+            histograms: {}
+        });
     });
 
     const configs = {
@@ -43,6 +47,8 @@ describe('Configuration', function() {
                 new Aggregator(recorder, defaultConfig.aggregator);
             recorder.counter('counter', 1);
 
+            recorder.gauge('my_gauge', 3);
+
             const timer = recorder.timer('timer');
             const id = timer.start();
             timer.stop(id);
@@ -53,6 +59,7 @@ describe('Configuration', function() {
 
             const report = aggregator.report();
             assert.equal(report.counters.counter, 1);
+            assert.equal(report.gauges.my_gauge, 3);
             assert(report.histograms.timer);
             assert(report.histograms.histo);
 

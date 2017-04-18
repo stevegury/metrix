@@ -135,4 +135,37 @@ describe('Module API', function() {
 
         testHisto(histo);
     });
+
+
+    function testGauge(gauge) {
+        assert.isTrue(gauge !== null);
+
+        // This shouldn't throw
+        gauge.update(-1);
+        gauge.update(12);
+    }
+
+    it('Creating default Gauge', function() {
+        const recorder = metrix.createRecorder();
+        const gauge = metrix.gauge.createDefault(recorder, 'name', 1, {
+            tag1: 'data'
+        });
+        testGauge(gauge);
+    });
+
+    it('Creating precise Gauge', function() {
+        const recorder = metrix.createRecorder();
+        const gauge = metrix.gauge.createPrecise(recorder, 'name', 1, {
+            tag1: 'data'
+        });
+        testGauge(gauge);
+    });
+
+    it('Creating disable Gauge', function() {
+        const recorder = metrix.createRecorder();
+        const gauge = metrix.gauge.createDisable(recorder, 'name', 1, {
+            tag1: 'data'
+        });
+        testGauge(gauge);
+    });
 });
